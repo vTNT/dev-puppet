@@ -1,0 +1,12 @@
+<%= nginx_log %>/*.log {
+    daily
+    rotate 7
+    missingok
+    dateext
+    notifempty
+    compress
+    sharedscripts
+    postrotate
+    [ ! -f <%= nginx_pid %> ] || /bin/kill -USR1 `/bin/cat <%= nginx_pid %>`
+    endscript
+    }

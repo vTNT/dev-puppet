@@ -1,0 +1,294 @@
+define host{
+        host_name                       <%= webhost %>
+        alias                           web-server
+        address                         <%= webip %>
+        check_command                   check-host-alive
+        max_check_attempts              2
+        check_period                    24x7
+        contact_groups                  web-server
+        notification_interval           2
+        notification_period             24x7
+        notification_options            d,u,r
+        } 
+define hostescalation{ 
+                host_name               <%= webhost %>       
+                first_notification      3                 
+                last_notification       0                 
+                notification_interval   30               
+                contact_groups          web-server             
+                } 
+define serviceescalation{ 
+                host_name               <%= webhost %>
+                service_description     check-host-alive       
+                first_notification      3
+                last_notification       0 
+                notification_interval   30 
+                contact_groups          web-server 
+                } 
+define serviceescalation{ 
+                host_name               <%= webhost %> 
+                service_description     check-disk       
+                first_notification      3 
+                last_notification       0 
+                notification_interval   30 
+                contact_groups          web-server 
+                } 
+define serviceescalation{ 
+                host_name               <%= webhost %> 
+                service_description     SSH-Listener       
+                first_notification      3 
+                last_notification       0 
+                notification_interval   30 
+                contact_groups          web-server 
+                } 
+define serviceescalation{ 
+                host_name               <%= webhost %>
+                service_description     Nginx-Listener       
+                first_notification      3 
+                last_notification       0 
+                notification_interval   30 
+                contact_groups          web-server 
+                } 
+define serviceescalation{ 
+                host_name               <%= webhost %> 
+                service_description     Linux-Memory       
+                first_notification      3 
+                last_notification       0 
+                notification_interval   30 
+                contact_groups          web-server 
+                } 
+define serviceescalation{ 
+                host_name               <%= webhost %>
+                service_description     Linux-load      
+                first_notification      3 
+                last_notification       0 
+                notification_interval   30 
+                contact_groups          web-server 
+                } 
+define serviceescalation{ 
+                host_name               <%= webhost %> 
+                service_description     Linux-total-procs       
+                first_notification      3 
+                last_notification       0 
+                notification_interval   30 
+                contact_groups          web-server 
+                } 
+define serviceescalation{ 
+                host_name               <%= webhost %>
+                service_description     Linux-PHP-procs       
+                first_notification      3 
+                last_notification       0 
+                notification_interval   30 
+                contact_groups          web-server 
+                } 
+define serviceescalation{ 
+                host_name               <%= webhost %> 
+                service_description     Linux-CPU       
+                first_notification      3 
+                last_notification       0 
+                notification_interval   30 
+                contact_groups          web-server 
+                } 
+define serviceescalation{ 
+                host_name               <%= webhost %>
+                service_description     Linux-user       
+                first_notification      3 
+                last_notification       0 
+                notification_interval   30 
+                contact_groups          web-server 
+                } 
+define serviceescalation{ 
+                host_name               <%= webhost %> 
+                service_description     check-ips      
+                first_notification      3 
+                last_notification       0 
+                notification_interval   30 
+                contact_groups          web-server 
+                } 
+define serviceescalation{ 
+                host_name               <%= webhost %>
+                service_description     Linux-iftraffic-eth0       
+                first_notification      3 
+                last_notification       0 
+                notification_interval   30 
+                contact_groups          web-server 
+                } 
+#define serviceescalation{ 
+#                host_name               <%= webhost %> 
+#                service_description     Linux-iftraffic-eth1       
+#                first_notification      3 
+#                last_notification       0 
+#                notification_interval   30 
+#                contact_groups          web-server 
+#                } 
+
+    define service{
+        host_name               <%= webhost %>
+        service_description     check-host-alive
+        check_command           check-host-alive
+        max_check_attempts      3
+        normal_check_interval   3
+        retry_check_interval    2
+        check_period            24x7
+        notification_interval   5
+        notification_period     24x7
+        notification_options    w,u,c,r
+        contact_groups          web-server
+        }
+     define service{
+        host_name               <%= webhost %>
+        service_description     check-disk
+        check_command           check_nrpe!check_disk
+        max_check_attempts      3
+        normal_check_interval   3
+        retry_check_interval    2
+        check_period            24x7
+        notification_interval   5
+        notification_period     24x7
+        notification_options    w,u,c,r
+        contact_groups          web-server
+        }
+     define service{
+        host_name               <%= webhost %>
+        service_description     SSH-Listener
+        check_command           check_tcp!22
+        max_check_attempts      3
+        normal_check_interval   3
+        retry_check_interval    2
+        check_period            24x7
+        notification_interval   5
+        notification_period     24x7
+        notification_options    w,u,c,r
+        contact_groups          web-server
+        }
+     define service{
+        host_name               <%= webhost %>
+        service_description     Nginx-Listener
+        check_command           check_tcp!80
+        max_check_attempts      2
+        normal_check_interval   2
+        retry_check_interval    1
+        check_period            24x7
+        notification_interval   2
+        notification_period     24x7
+        notification_options    w,u,c,r
+        contact_groups          web-server
+        }
+     define service{
+        host_name               <%= webhost %>
+        service_description     Linux-Memory
+        check_command           check_nrpe!check_mem
+        max_check_attempts      3
+        normal_check_interval   3
+        retry_check_interval    2
+        check_period            24x7
+        notification_interval   5
+        notification_period     24x7
+        notification_options    w,u,c,r
+        contact_groups          web-server
+        }
+     define service{
+        host_name               <%= webhost %>
+        service_description     Linux-load
+        check_command           check_nrpe!check_load
+        max_check_attempts      3
+        normal_check_interval   3
+        retry_check_interval    2
+        check_period            24x7
+        notification_interval   5
+        notification_period     24x7
+        notification_options    w,u,c,r
+        contact_groups          web-server
+        }
+     define service{
+        host_name               <%= webhost %>
+        service_description     Linux-total-procs
+        check_command           check_nrpe!check_total_procs
+        max_check_attempts      3
+        normal_check_interval   3
+        retry_check_interval    2
+        check_period            24x7
+        notification_interval   5
+        notification_period     24x7
+        notification_options    w,u,c,r
+        contact_groups          web-server
+        }
+     define service{
+        host_name               <%= webhost %>
+        service_description     Linux-PHP-procs
+        check_command           check_nrpe!check_php_procs
+        max_check_attempts      3
+        normal_check_interval   3
+        retry_check_interval    2
+        check_period            24x7
+        notification_interval   5
+        notification_period     24x7
+        notification_options    w,u,c,r
+        contact_groups          web-server
+        }
+     define service{
+        host_name               <%= webhost %>
+        service_description     Linux-CPU
+        check_command           check_nrpe!check_cpu
+        max_check_attempts      3
+        normal_check_interval   3
+        retry_check_interval    2
+        check_period            24x7
+        notification_interval   5
+        notification_period     24x7
+        notification_options    w,u,c,r
+        contact_groups          web-server
+        }
+     define service{
+        host_name               <%= webhost %>
+        service_description     Linux-user
+        check_command           check_nrpe!check_users
+        max_check_attempts      3
+        normal_check_interval   3
+        retry_check_interval    2
+        check_period            24x7
+        notification_interval   5
+        notification_period     24x7
+        notification_options    w,u,c,r
+        contact_groups          web-server
+        }
+     define service{
+        host_name               <%= webhost %>
+        service_description     check-ips
+        check_command           check_nrpe!check_ips
+        max_check_attempts      3
+        normal_check_interval   3
+        retry_check_interval    2
+        check_period            24x7
+        notification_interval   5
+        notification_period     24x7
+        notification_options    w,u,c,r
+        contact_groups          web-server
+        }
+     define service{
+        host_name               <%= webhost %>
+        service_description     Linux-iftraffic-eth0
+        check_command           check_nrpe!check_iftraffic_eth0!
+        max_check_attempts      3
+        normal_check_interval   3
+        retry_check_interval    2
+        check_period            24x7
+        notification_interval   5
+        notification_period     24x7
+        notification_options    w,u,c,r
+        contact_groups          web-server
+        }
+#     define service{
+#        host_name               <%= webhost %>
+#        service_description     Linux-iftraffic-eth1
+#        check_command           check_nrpe!check_iftraffic_eth1!
+#        max_check_attempts      3
+#        normal_check_interval   3
+#        retry_check_interval    2
+#        check_period            24x7
+#        notification_interval   5
+#        notification_period     24x7
+#        notification_options    w,u,c,r
+#        contact_groups          web-server
+#        } 
+

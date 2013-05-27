@@ -1,0 +1,8 @@
+name 'reidmv-local_user'
+version '0.0.1'
+summary 'Example local user pattern'
+description 'Example pattern Module for configuring a machine-local account with a random starting password'
+project_page 'https://github.com/reidmv/puppet-module-local_user'
+license 'Apache License, Version 2.0'
+author 'Reid Vandewiele'
+source 'https://github.com/reidmv/puppet-module-local_user'

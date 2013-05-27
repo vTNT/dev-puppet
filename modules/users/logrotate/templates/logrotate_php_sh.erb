@@ -1,0 +1,20 @@
+#!/bin/bash
+
+BACKUP_DIR=<%= backup_php %>         # php 日志备份目录
+PHP_LOG_PATH=<%= php_log %>              # php 日志原始目录
+LOGROTATE_CONF_DIR=`dirname $0`         # logrotate 配置文件目录，默认跟本脚本同目录
+
+# 切割日志
+/usr/sbin/logrotate -f $LOGROTATE_CONF_DIR/logrotate_php.conf
+
+if [ ! -d $BACKUP_DIR ]; then
+    mkdir -p $BACKUP_DIR
+fi
+
+# 对切割完日志进行重定向压缩到 BACKUP_DIR
+for log in `ls $PHP_LOG_PATH/*-20[1-9][0-9][0,1][0-9][0-3][0-9].gz`; do
+        mv $log $BACKUP_DIR/
+done
+
+# 删除7天前的备份日志
+find $BACKUP_DIR/* -name "*.gz" -mtime 7 -type f -exec rm -f {} \;

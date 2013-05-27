@@ -1,0 +1,127 @@
+#!/bin/bash
+
+HOST=`hostname`
+PASSWORD_FILE=`dirname $0`/rsync.password
+RSYNC_PATH=${HOST%%.*}/
+LOG_FILE=/var/log/rsync_client.log
+
+# 如果要把一个目录直接同步到目标目录下
+# 源目录不要以 "/" 结束
+# 否则会把源目录下的文件同步到目标目录下
+#if [ ${1:0-1:1} = "/" ]; then
+#    LOCAL=${1%/*}
+#fi
+
+if [ $# -lt 2 ]; then
+    echo "USAGE: $0 /path/to/file <user>@<server>::<module>/<hostname> [RSYNC OPTIONS...]"
+    echo ""
+    echo "user    : rsync"
+    echo "server  : rsync服务器的IP"
+    echo "module  : rsync服务器定义的模块，三个：data/database/log"
+    echo "hostname: 客户机hostname，用主机名分目录，方便区分是哪台客户机的数据"
+    echo ""
+    echo "Example: $0 /var/www/ename rsync@192.168.10.211::data/$RSYNC_PATH --delete --exclude upload/ --exclude images/"
+    exit 1;
+fi
+
+echo $@
+
+rsync -avz --bwlimit=5000 --password-file=$PASSWORD_FILE $@
+
+# LOG
+result=$?
+DATE="[`date`]"
+if [ $result -ne "0" ]; then
+    EVENT=x
+    case $result in
+        "1")
+             EVENT="Syntax or usage error"
+        ;;
+        "2")
+             EVENT="Protocol incompatibility"
+        ;;
+        "3")
+             EVENT="Errors selecting input/output files, dirs"
+        ;;
+        "4")
+             EVENT="Requested action not supported: an attempt was made to manipulate 64-bit files on a platform that cannot support them; or an option was specified that is supported by the client and not by the server"
+        ;;
+        "5")
+             EVENT="Error starting client-server protocol"
+        ;;
+        "6")
+             EVENT="Daemon unable to append to log-file"
+        ;;
+        "10")
+             EVENT="Error in socket I/O"
+        ;;
+        "11")
+             EVENT="Error in file I/O"
+        ;;
+        "12")
+             EVENT="Error in rsync protocol data stream"
+        ;;
+        "13")
+             EVENT="Errors with program diagnostics"
+        ;;
+        "14")
+             EVENT="Error in IPC code"
+        ;;
+        "20")
+             EVENT="Received SIGUSR1 or SIGINT"
+        ;;
+        "21")
+             EVENT="Some error returned by waitpid()"
+        ;;
+        "22")
+             EVENT="Error allocating core memory buffers"
+        ;;
+        "22")
+             EVENT="Partial transfer due to error"
+        ;;
+        "24")
+              EVENT="TPartial transfer due to vanished source files"
+        ;;
+        "25")
+              EVENT="The --max-delete limit stopped deletions"
+        ;;
+        "30")
+              EVENT="Timeout in data send/receive"
+        ;;
+        "35")
+              EVENT="Timeout waiting for daemon connection"
+        ;;
+    esac
+
+    echo $DATE $EVENT
+    echo $DATE "SOURCE:"$LOCAL $EVENT >> $LOG_FILE
+    exit 1
+else
+    echo $DATE "SOURCE:"$LOCAL "Sync success" >> $LOG_FILE
+    exit 0
+fi
+
+# EXIT VALUES
+# 
+#        0      Success
+#        1      Syntax or usage error
+#        2      Protocol incompatibility
+#        3      Errors selecting input/output files, dirs
+#        4      Requested action not supported: an attempt was made to manipulate 64-bit files on  a  platform  that
+#               cannot  support  them;  or  an  option  was specified that is supported by the client and not by the
+#               server.
+#        5      Error starting client-server protocol
+#        6      Daemon unable to append to log-file
+#        10     Error in socket I/O
+#        11     Error in file I/O
+#        12     Error in rsync protocol data stream
+#        13     Errors with program diagnostics
+#        14     Error in IPC code
+#        20     Received SIGUSR1 or SIGINT
+#        21     Some error returned by waitpid()
+#        22     Error allocating core memory buffers
+#        23     Partial transfer due to error
+#        24     Partial transfer due to vanished source files
+#        25     The --max-delete limit stopped deletions
+#        30     Timeout in data send/receive
+#        35     Timeout waiting for daemon connection

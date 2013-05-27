@@ -1,0 +1,12 @@
+ <%= php_log %>/*.log {
+    daily
+    rotate 7
+    missingok
+    dateext
+    notifempty
+    compress
+    sharedscripts
+    postrotate
+    [ ! -f <%= php_pid %> ] || /bin/kill -USR1 `/bin/cat <%= php_pid %>`
+    endscript
+    }

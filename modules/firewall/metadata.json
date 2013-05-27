@@ -1,0 +1,26 @@
+{
+  "types": [
+
+  ],
+  "description": "A simple iptables firewall Puppet module for opening TCP UDP ports",
+  "source": "UNKNOWN",
+  "summary": "UNKNOWN",
+  "author": "sschneid",
+  "checksums": {
+    "spec/spec_helper.rb": "ca19ec4f451ebc7fdb035b52eae6e909",
+    "templates/iptables.erb": "5bef5760b036c7c3f4789a5c9432df1b",
+    "readme.md": "22d38c798d1d1735a691f9504dbe0a97",
+    "tests/init.pp": "9263b8962ddf2e86b95b5ce81ce27700",
+    "metadata.json": "d34d0b70aba36510fbc2df4e667479ef",
+    "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
+    "manifests/init.pp": "5b534d97fc91e3fad5d245f4b375afee",
+    "Modulefile": "6a5bd7963716ae45a8915542c59caf47"
+  },
+  "dependencies": [
+
+  ],
+  "license": "UNKNOWN",
+  "version": "1.0.0",
+  "name": "sschneid-firewall",
+  "project_page": "https://github.com/sschneid/puppet-firewall"
+}

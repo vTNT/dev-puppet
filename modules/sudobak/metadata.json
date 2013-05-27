@@ -1,0 +1,30 @@
+{
+  "checksums": {
+    "tests/sudoers.pp": "5fa2c2b45ed6a7de3e2d9e5c5f10d46d",
+    "manifests/sudoers.pp": "bbf328bdeca86732facebf47cd33233f",
+    "files/pam_su_el6": "e345368ae2a404e1e7168f516ee323f6",
+    "Modulefile": "e9a62837680c9ae7986feb6f86a48cb4",
+    "LICENSE": "2ee41112a44fe7014dce33e26468ba93",
+    "README.md": "182943208ef7e66bb64423f59c52f105",
+    "manifests/init.pp": "547b84dcf9ec97675f29d9297cd8a88f",
+    "files/sudoers": "57fe2d46e50c9d2cbcfa5118f116e4a9",
+    "CHANGELOG": "411b099746d6431c72d76b59e7da409a",
+    "manifests/conf.pp": "3c7462b638a2b97eaefa9f59d75417e9",
+    "tests/conf.pp": "57754c127c28a8404548fd8cd4a8f706",
+    "tests/init.pp": "21a5c26bab1bca243934e51d5540a6a3"
+  },
+  "license": "Apache License, Version 2.0",
+  "source": "UNKNOWN",
+  "dependencies": [
+
+  ],
+  "description": "Manage sudoers on Enterprise Linux.",
+  "summary": "Manage sudoers on Enterprise Linux.",
+  "version": "0.1.0",
+  "types": [
+
+  ],
+  "author": "rji",
+  "name": "rji-sudo",
+  "project_page": "https://github.com/rji/puppet-sudo"
+}

@@ -1,0 +1,12 @@
+<%= mysql_slow_log %>/slowquery.log {
+    daily
+    rotate 7
+    missingok
+    dateext
+    notifempty
+    compress
+    sharedscripts
+    postrotate
+    /usr/local/mysql/bin/mysqladmin -u<%= flush_user %> -p'<%= flush_password %>' flush-logs
+    endscript
+    }

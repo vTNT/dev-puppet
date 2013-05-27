@@ -1,0 +1,6 @@
+Puppet rji-sudo changelog
+https://github.com/rji/puppet-sudo
+
+Date        Version   Changes
+----------  -------   ------------------
+2013-03-19  0.1.0     Initial release for EL6

@@ -1,0 +1,16 @@
+com2sec localhost  <%= ipaddress_lo %>       public
+com2sec monitorhost  <%= monitor_ip %>       <%= snmp_passwd %>
+group   myhost         v2c           localhost
+group   mygroup        v2c           monitorhost
+view    systemview    included   .1.3.6.1.2.1.1
+view    systemview    included   .1.3.6.1.2.1.25.1.1
+access  myhost         ""      any       noauth    exact  all    none none
+access  mygroup        ""      any       noauth    exact  all    none none
+view all    included  .1                               80
+pass .1.3.6.1.4.1.4413.4.1 /usr/bin/ucd5820stat
+extend .1.3.6.1.4.1.2021.21 webconn /bin/bash /etc/snmp/webconn.sh
+extend .1.3.6.1.4.1.2021.54 hdNum /bin/sh /usr/local/bin/snmpdiskio hdNum 
+extend .1.3.6.1.4.1.2021.55 hdIndex /bin/sh /usr/local/bin/snmpdiskio hdIndex 
+extend .1.3.6.1.4.1.2021.56 hdDescr /bin/sh /usr/local/bin/snmpdiskio hdDescr 
+extend .1.3.6.1.4.1.2021.57 hdInBlocks /bin/sh /usr/local/bin/snmpdiskio hdInBlocks 
+extend .1.3.6.1.4.1.2021.58 hdOutBlocks /bin/sh /usr/local/bin/snmpdiskio hdOutBlocks

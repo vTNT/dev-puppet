@@ -1,0 +1,7 @@
+name         'rji-sudo'
+version      '0.1.0'
+author       'rji'
+license      'Apache License, Version 2.0'
+summary      'Manage sudoers on Enterprise Linux.'
+description  'Manage sudoers on Enterprise Linux.'
+project_page 'https://github.com/rji/puppet-sudo'

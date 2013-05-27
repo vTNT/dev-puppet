@@ -1,0 +1,22 @@
+{
+  "version": "0.0.1",
+  "summary": "Example local user pattern",
+  "author": "Reid Vandewiele",
+  "types": [
+
+  ],
+  "project_page": "https://github.com/reidmv/puppet-module-local_user",
+  "checksums": {
+    "lib/facter/local_users.rb": "5696bfe2ae3c98187c31ebb35d93d50b",
+    "README.md": "c47dbdd131956a78f67fc02eb0a74256",
+    "Modulefile": "3e7c4f0a2dad88d2ab885bfd88cd40a7",
+    "manifests/init.pp": "358ec30125287cb64af2bdefeb390c3d"
+  },
+  "source": "https://github.com/reidmv/puppet-module-local_user",
+  "dependencies": [
+
+  ],
+  "license": "Apache License, Version 2.0",
+  "name": "reidmv-local_user",
+  "description": "Example pattern Module for configuring a machine-local account with a random starting password"
+}
