@@ -1,0 +1,11 @@
+#!/usr/bin/awk -f
+#
+# 
+# 
+#
+BEGIN{
+	RS="\}"
+}
+
+$0 ~/service.*check_iamlive.*current_state=0/ {print "/sbin/iptables -D INPUT -p udp -s ! 127.0.0.1 --dport 53 -j DROP"}
+$0 ~/service.*check_iamlive.*current_state=2/ {print "/sbin/iptables -D INPUT -p udp -s ! 127.0.0.1 --dport 53 -j DROP;/sbin/iptables -A INPUT -p udp -s ! 127.0.0.1 --dport 53 -j DROP"}

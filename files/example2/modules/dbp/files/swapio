@@ -1,0 +1,2 @@
+#!/bin/bash
+/usr/bin/vmstat 2 2|/usr/bin/tail -1|/usr/bin/awk '{print $7" "$8}'

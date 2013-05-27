@@ -1,0 +1,2 @@
+MAILTO=""
+10,30,50 *	* * *	root	/usr/bin/puppetd --debug --onetime

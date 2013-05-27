@@ -1,0 +1,3 @@
+#!/bin/bash 
+ts='<%= timeserver %>'
+/usr/sbin/ntpdate  $ts

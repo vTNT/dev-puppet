@@ -1,0 +1,32 @@
+# don't edit by hand
+make_nagios_conf() {
+	node=$1
+	type=$2
+	nettype=$3
+	neighbor=`echo "$4"`
+	grep -v -e "#" -e "^$" /etc/nagios/domain.list|grep "$nettype"| awk -v node="$node" -v type="$type"  -v nb="$neighbor" '{ 
+	split($4,A,",")
+	# active and passive host&& service define
+	if ( type != "cluster" ) {
+	print "define host {\n\thost_name\t"$1"_on_"node"\n\taddress\t\t"$1"\n\tuse\t\t"type"_linux_server\n}" >> "/etc/nagios/autodns/"node"_"type"_host.cfg"
+	print "define service {\n\tservice_description\tcheck_http\n\tuse\t\t"type"_service\n\thost_name\t"$1"_on_"node"\n\tcheck_command\t"type"_"$3"\n}" >> "/etc/nagios/autodns/"node"_"type"_service.cfg"
+	}
+	# cluster service define
+	if ( type == "cluster" ) {
+		nbr=nb" "node
+		gsub($5,"",nbr)
+		split(nbr,N)
+		ss=""
+		nn=0
+		for ( j in N ) {
+			ss=ss"$SERVICESTATEID:"$1"_on_"N[j]":check_http$,"
+		nn++
+		}
+		gsub(",$","",ss)
+		for ( k in A ) {
+			if ( A[k] != "" ) print "define service {\n\tservice_description\t"A[k]"_INA_"$1"_ON_"$2"\n\tcheck_command\tcheck_service_cluster!"A[k]"INA"$1"!"nn"!"nn"!"ss"\n\tuse\t\tcluster-service\n\thost_name\tlocalhost\n}" >> "/etc/nagios/autodns/cluster.cfg"
+		}
+	}
+	}'
+}
+

@@ -1,0 +1,84 @@
++ ping
+probe = FPing
+menu = ping
+title = ping targets
+
+
+++ public
+menu = public
+title = public server
+
++++ sh_tele_dns
+menu = sh_tele_dns
+host = 202.96.209.6
+
+
++++ sohu
+host = www.sohu.com
+
+
++++ sina
+host = www.sina.com.cn
+
+
++++ google
+host = www.google.cn
+
+
++++ baidu
+host = www.baidu.com
+
+
++++ nothing
+menu = +++++++++
+
++++ sh_tele_dns_multi
+menu = sh_tele_dns
+title = sh_tele_dns_multi
+host = /ping/public/sh_tele_dns /ping/public/sh_tele_dns~shzj /ping/public/sh_tele_dns~shnj
+
++++ sohu_multi
+menu = www.sohu.com
+title = sohu_multi
+host = /ping/public/sohu /ping/public/sohu~shzj /ping/public/sohu~shnj
+
++++ sina_multi
+menu = www.sina.com.cn
+host = /ping/public/sina /ping/public/sina~shzj /ping/public/sina~shnj
+
++++ google_multi
+menu = www.google.com
+title = google_multi
+host = /ping/public/google /ping/public/google~shzj /ping/public/google~shnj
+
++++ baidu_multi
+menu = www.baidu.com
+title = baidu_multi
+host = /ping/public/baidu /ping/public/baidu~shzj /ping/public/baidu~shnj
+
+
+
+++ vmx_cdn_clients
+menu = vmx cdn clients
+title = vmx cdn clients
+
++++ www_imobile
+host = 60.28.29.20
+
++++ bbs_imobile
+host = 60.28.29.21
+
+
++++ nothing2
+menu = +++++++++
+
++++ www_imobile_multi
+menu = www_imobile
+title = www_imobile_multi
+host = /ping/vmx_cdn_clients/www_imobile  /ping/vmx_cdn_clients/www_imobile~shzj  /ping/vmx_cdn_clients/www_imobile~shnj
+
+
++++ bbs_imobile_multi
+menu = bbs_imobile
+title = bbs_imobile_multi
+host = /ping/vmx_cdn_clients/bbs_imobile  /ping/vmx_cdn_clients/bbs_imobile~shzj  /ping/vmx_cdn_clients/bbs_imobile~shnj

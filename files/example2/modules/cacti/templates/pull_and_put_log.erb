@@ -1,0 +1,27 @@
+#!/bin/bash
+
+#
+# Manged by puppet.
+# This file will be change if the nagios file format change.
+# and don't edit this file by hand. 
+#
+
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/bin/X11"
+wd="/etc/nagios/target/<%= corp %>/<%= idc %>"
+
+[ -d /tmp/cacti ]||mkdir /tmp/cacti
+
+find /tmp/cacti -cmin +6|xargs rm 2>/dev/null
+awk '\
+BEGIN{ cache="cachesquid";carp="carpsquid" }
+$1 ~/^##cactihook##$/ && $4 ~/(carp|meta|cache)squid/ {
+        system("squidclient -h "$3" -p 80 mgr:5min >/tmp/cacti/"$3)
+        if ( $4 ~ /cachesquid/ ) cache=cache" "$3
+        if ( $4 ~ /carpsquid/ ) carp=carp" "$3
+}
+END {
+        system("/usr/local/bin/sum_all_mgr5min_noupdate "cache)
+        system("/usr/local/bin/sum_all_mgr5min_noupdate "carp)
+}' ${wd}/*
+
+[ -x /usr/local/bin/rsync_squidlog_2center.sh ]&&/usr/local/bin/rsync_squidlog_2center.sh

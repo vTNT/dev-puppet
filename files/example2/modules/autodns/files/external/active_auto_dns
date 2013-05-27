@@ -1,0 +1,19 @@
+#!/usr/bin/awk -f
+#
+# Name: active_auto_dns.awk 
+# check the nagios status.dat file,then update the state of a domain to bind server.
+#
+BEGIN{
+	RS="\}"
+}
+
+$1 ~/service/ {
+        if ($0 ~ ".*_ON_.*") { for ( i=1 ; i<= NF ; i++) {
+                if ( $i ~ "host_name=" ) split($i,hn,"=")
+                if ( $i ~ "service_description=" ) split($i,sd,"=")
+                if ( $i ~ "current_state=" ) split($i,cs,"=")
+        	}
+        system ("/usr/local/bin/auto_dns "sd[2]" "cs[2]" HARD")
+	}
+}
+

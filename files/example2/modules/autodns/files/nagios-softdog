@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# puppet managed.
+#
+
+cmd="/usr/lib/nagios/plugins/check_nagios"
+[ -x $cmd ]|| exit 0
+$cmd -F /var/log/nagios/status.dat  -C /sbin/nagios -e 60
+[ $? -eq 2 ] && /etc/init.d/nagios start

@@ -1,0 +1,2 @@
+#!/bin/bash
+[ -x /sbin/ipvsadm ] && /sbin/ipvsadm --set 900 12 30

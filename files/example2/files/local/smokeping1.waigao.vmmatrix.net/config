@@ -1,0 +1,167 @@
+*** General ***
+
+owner    = Huang Mingyou
+contact  = huangmingyou@vmmatrix.com
+mailhost = mail.vmmatrix.com
+sendmail = /usr/lib/sendmail
+# NOTE: do not put the Image Cache below cgi-bin
+# since all files under cgi-bin will be executed ... this is not
+# good for images.
+imgcache = /var/www/smokeping
+imgurl   = /smokeping
+datadir  = /var/lib/smokeping
+piddir  = /tmp
+cgiurl   = http://127.0.0.1/cgi-bin/smokeping.cgi
+smokemail = /opt/smokeping/etc/smokemail.dist
+tmail = /opt/smokeping/etc/tmail.dist
+# specify this to get syslog logging
+syslogfacility = local0
+# each probe is now run in its own process
+# disable this to revert to the old behaviour
+# concurrentprobes = no
+
+*** Alerts ***
+to = hmy@i.vmx.cn
+from = smokeping@vmmatrix.com
+
++someloss
+type = loss
+# in percent
+pattern = >0%,*12*,>0%,*12*,>0%
+comment = loss 3 times  in a row
+
+*** Database ***
+
+step     = 60
+pings    = 10
+
+# consfn mrhb steps total
+
+AVERAGE  0.5   1 1576800
+AVERAGE  0.5  5  72
+    MIN  0.5  5  72
+    MAX  0.5  5  72
+AVERAGE  0.5 10   144
+    MAX  0.5 10   144
+    MIN  0.5 10   144
+AVERAGE  0.5 1440 365
+    MAX  0.5 1440 365
+    MIN  0.5 1440 365
+
+
+*** Presentation ***
+
+template = /opt/smokeping/etc/basepage.html.dist
+
++ charts
+
+menu = Charts
+title = The most interesting destinations
+
+++ stddev
+sorter = StdDev(entries=>4)
+title = Top Standard Deviation
+menu = Std Deviation
+format = Standard Deviation %f
+
+++ max
+sorter = Max(entries=>5)
+title = Top Max Roundtrip Time
+menu = by Max
+format = Max Roundtrip Time %f seconds
+
+++ loss
+sorter = Loss(entries=>5)
+title = Top Packet Loss
+menu = Loss
+format = Packets Lost %f
+
+++ median
+sorter = Median(entries=>5)
+title = Top Median Roundtrip Time
+menu = by Median
+format = Median RTT %f seconds
+
++ overview 
+
+width = 600
+height = 50
+range = 24h
+
++ detail
+
+width = 600
+height = 200
+unison_tolerance = 2
+
+
+"Last 1 Hour"    1h
+"Last 6 Hours"   6h
+"Last 1 Day"    24h
+"Last 7 Day"     7d
+"Last 30 Day"   30d
+
+#+ hierarchies
+#++ owner
+#title = Host Owner
+#++ location
+#title = Location
+
+*** Probes ***
+
++ FPing
+
+binary = /usr/sbin/fping
+
++AnotherDNS
+
+forks = 5
+offset = 50%
+step = 60
+
+# The following variables can be overridden in each target section
+lookup = mirror.vmmatrix.net
+mininterval = 0.5
+pings = 5
+port = 53
+recordtype = A
+require_noerror = 0
+timeout = 5
+
+
++EchoPingHttp
+
+binary=/usr/bin/echoping
+forks=5
+offset=50%
+step=60
+
+ignore_cache = 0
+ipversion = 4
+pings = 3
+port = 80
+timeout = 10
+url = /
+waittime = 1
+
+*** Slaves ***
+secrets=/opt/smokeping/etc/smokeping_secrets.dist
++shzj
+display_name=shzj
+color=ff0000
++shnj
+display_name=shnj
+color=0000ff
+
+*** Targets ***
+
+probe = FPing
+slaves = shzj shnj
+
+menu = Top
+title = vmmatrix.com network
+remark = vmmatrix.com
+
+@include /opt/smokeping/etc/ping_targets
+@include /opt/smokeping/etc/dns_targets
+@include /opt/smokeping/etc/echoping_targets

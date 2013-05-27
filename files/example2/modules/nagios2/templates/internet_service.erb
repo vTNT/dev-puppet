@@ -1,0 +1,11 @@
+define host {
+	use		linux-server
+	host_name	<%= app %><%= ip %>
+	address		<%= ip %>
+}
+define service {
+	service_description check_<%= app  %>
+	use		external-service
+	host_name	<%= app %><%= ip %>
+	check_command	<%= check_command %>
+}

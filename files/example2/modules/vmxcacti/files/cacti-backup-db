@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#
+# puppet management this shell script
+# Don't edit this file
+# 
+
+
+PATH="/usr/bin:/usr/sbin:/bin:/sbin"
+[ -d /vmx-backup ]||exit 1
+[ -d /vmx-backup/cacit-db ]||mkdir /vmx-backup/cacti-db 2>/dev/null
+find /vmx-backup/cacti-db -ctime +30|xargs rm 2>/dev/null
+mysqldump -u root -pvmmatrix -l cacti >/vmx-backup/cacti-db/cacti.sql.`date +%s` 2>/dev/null
+[ $? -ne 0 ]&&logger -t "cacti-backup-db" "Get  error"

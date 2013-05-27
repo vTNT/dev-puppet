@@ -1,0 +1,20 @@
+#!/bin/bash 
+ip r add 10.0.0.0/8 via 10.0.97.251
+#
+# port 81
+#
+iptables -t mangle -D OUTPUT -o eth0 -p tcp --sport 81 -d ! 10.0.0.0/8 -j MARK --set-mark 1
+iptables -t mangle -A OUTPUT -o eth0 -p tcp --sport 81 -d ! 10.0.0.0/8 -j MARK --set-mark 1
+ip r add default via 10.0.97.231 table gw1
+ip rule delete fwmark 1
+ip rule add fwmark 1 table gw1
+
+
+# port 80
+iptables -t mangle -D OUTPUT -o eth0 -p tcp --sport 80 -d ! 10.0.0.0/8 -j MARK --set-mark 2
+iptables -t mangle -A OUTPUT -o eth0 -p tcp --sport 80 -d ! 10.0.0.0/8 -j MARK --set-mark 2
+ip r add default via 10.0.97.231 table gw2
+ip rule delete fwmark 2 
+ip rule add fwmark 2 table gw2
+
+exit 0

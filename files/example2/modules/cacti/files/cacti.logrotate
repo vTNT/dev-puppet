@@ -1,0 +1,7 @@
+/var/www/vmx-cacti/log/*.log {
+	rotate 1
+	missingok
+        nocreate
+        sharedscripts
+}
+

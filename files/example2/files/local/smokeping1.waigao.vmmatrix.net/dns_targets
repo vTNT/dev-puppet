@@ -1,0 +1,113 @@
++ dns
+probe=AnotherDNS
+menu=dns 
+title=dns targets
+
+++ rootdns
+menu = rootdns
+title = rootdns
+
++++g
+host=g.root-servers.net
+
+
++++h
+host=h.root-servers.net
+
+
++++i
+host=i.root-servers.net
+
++++j
+host=j.root-servers.net
+
++++k
+host=k.root-servers.net
+
++++l
+host=l.root-servers.net
+
++++m
+host=m.root-servers.net
+
+
++++ nothing
+menu = +++++++++
++++m_multi
+menu = m
+title = m
+host = /dns/rootdns/m /dns/rootdns/m~shzj /dns/rootdns/m~shnj
+
++++g_multi
+menu = g
+title = g
+host = /dns/rootdns/g /dns/rootdns/g~shzj /dns/rootdns/g~shnj
+
++++h_multi
+menu = h
+title = h
+host = /dns/rootdns/h /dns/rootdns/h~shzj /dns/rootdns/h~shnj
+
++++i_multi
+menu = i
+title = i
+host = /dns/rootdns/i /dns/rootdns/i~shzj /dns/rootdns/i~shnj
+
++++j_multi
+menu = j
+title = j
+host = /dns/rootdns/j /dns/rootdns/j~shzj /dns/rootdns/j~shnj
+
++++k_multi
+menu = k
+title = k
+host = /dns/rootdns/k /dns/rootdns/k~shzj /dns/rootdns/k~shnj
+
++++l_multi
+menu = l
+title = l
+host = /dns/rootdns/l /dns/rootdns/l~shzj /dns/rootdns/l~shnj
+
+
+
+++ vmxdns
+menu = vmxdns
+title = vmxdns
+
++++ns11
+host=ns11.vmmatrix.com
+
++++ns13
+host=ns13.vmmatrix.com
+
+
++++ns14
+host=ns14.vmmatrix.com
+
+
++++ns19
+host=ns19.vmmatrix.com
+
+
++++ nothing2
+menu = +++++++++
+
++++ns11_multi
+menu = ns11_multi
+title = ns11
+host = /dns/vmxdns/ns11 /dns/vmxdns/ns11~shzj /dns/vmxdns/ns11~shnj
+
++++ns13_multi
+menu = ns13_multi
+title = ns13
+host = /dns/vmxdns/ns13 /dns/vmxdns/ns13~shzj /dns/vmxdns/ns13~shnj
+
++++ns14_multi
+menu = ns14_multi
+title = ns14
+host = /dns/vmxdns/ns14 /dns/vmxdns/ns14~shzj /dns/vmxdns/ns14~shnj
+
++++ns19_multi
+menu = ns19_multi
+title = ns19
+host = /dns/vmxdns/ns19 /dns/vmxdns/ns19~shzj /dns/vmxdns/ns19~shnj

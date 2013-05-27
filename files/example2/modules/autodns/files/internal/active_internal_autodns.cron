@@ -1,0 +1,2 @@
+MAILTO=""
+*/2 * * * * root /usr/local/bin/active_internal_autodns /var/log/nagios/status.dat

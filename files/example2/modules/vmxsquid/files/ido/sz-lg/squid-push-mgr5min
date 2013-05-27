@@ -1,0 +1,22 @@
+#!/bin/bash
+
+[ -f /etc/squid/vmx-squid.conf ]||exit 1
+. /etc/squid/vmx-squid.conf
+
+PATH="/usr/bin:/bin:/sbin:/usr/sbin"
+
+squidclient -p 80 mgr:5min >/tmp/${hostname}.5min
+
+for j in `echo $cactiserver $cactiserver2`;do
+for i in `seq 10`;do
+rsync --timeout=10 /tmp/${hostname}.5min ${j}::cachemgr5min/${cactidir}/
+stat=$?
+[ $stat -eq 0 ]&&break
+sleep 1
+done
+
+if [ $stat -ne 0 ]; then
+logger -t "squid-push-mgr5min" "get rsync error $stat"
+echo "get rsync error $stat "|mail -s "squid-push-mgr5min $hostname" hmy@vmx.cn
+fi
+done

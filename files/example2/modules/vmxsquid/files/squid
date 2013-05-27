@@ -1,0 +1,196 @@
+#! /bin/sh
+#
+# squid		Startup script for the SQUID HTTP proxy-cache.
+#
+# Version:	@(#)squid.rc  2.20  01-Oct-2001  miquels@cistron.nl
+#
+
+NAME=squid
+DAEMON=/usr/sbin/squid
+LIB=/usr/lib/squid
+PIDFILE=/var/spool/squid/logs/$NAME.pid
+SQUID_ARGS="-D -sYC"
+
+[ ! -f /etc/default/squid ] || . /etc/default/squid
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+[ -x $DAEMON ] || exit 0
+#hmy add#
+push_start(){
+	: nohup /usr/bin/squid-pushlog2mysql.sh
+	}
+push_stop(){
+	: killall -9 -g -w -q squid-pushlog2mysql.sh 
+	}
+#hmy add end#
+
+grepconf () {
+	w=" 	" # space tab
+	sq=/etc/squid/squid.conf
+	# sed is cool.
+	res=`sed -ne '
+		s/^'$1'['"$w"']\+\([^'"$w"']\+\).*$/\1/p;
+		t end;
+		d;
+		:end q' < $sq`
+	[ -n "$res" ] || res=$2
+	echo "$res"
+}
+
+grepconf2 () {
+	w=" 	" # space tab
+	sq=/etc/squid/$NAME.conf
+	# sed is cool.
+	res=`sed -ne '
+		s/^'$1'['"$w"']\+[^'"$w"']\+['"$w"']\+\([^'"$w"']\+\).*$/\1/p;
+		t end;
+		d;
+		:end q' < $sq`
+	[ -n "$res" ] || res=$2
+	echo "$res"
+}
+
+#
+#	Try to increase the # of filedescriptors we can open.
+#
+maxfds () {
+	ulimit -n 32768
+}
+
+fixperms () {
+	dir=$1
+	usr=$2
+	grp=$3
+
+	currusr=`/usr/bin/stat -c '%U' $dir`
+	currgrp=`/usr/bin/stat -c '%G' $dir`
+
+	if [ $currusr != $usr ]
+	then
+		chown $usr $dir -R
+	fi
+	
+	if [ $currgrp != $grp ]
+	then
+		chgrp $grp $dir -R
+	fi
+	
+}
+
+start () {
+	/usr/bin/update-squid.conf 
+	cdr=`grepconf2 cache_dir /var/spool/$NAME`
+    usr=`grepconf cache_effective_user proxy`
+	grp=`grepconf cache_effective_group proxy`
+
+	case "$cdr" in
+		[0-9]*)
+			echo "squid: squid.conf contains 2.2.5 syntax - not starting!" >&2
+			exit 1
+			;;
+	esac
+	
+	#
+    # Create spool dirs if they don't exist.
+    #
+	if [ -d "$cdr" -a ! -d "$cdr/00" ]
+	then
+		echo "Creating squid spool directory structure"
+		/usr/sbin/squid -z
+	fi
+
+	if [ "$CHUID" = "" ]; then
+		CHUID=root
+	fi
+
+	maxfds
+	umask 027
+	cd $cdr
+	start-stop-daemon --quiet --start \
+		--pidfile $PIDFILE \
+		--chuid $CHUID \
+		--exec $DAEMON -- $SQUID_ARGS < /dev/null
+	sleep 1
+}
+
+stop () {
+	PID=`cat $PIDFILE 2>/dev/null`
+	start-stop-daemon --stop --quiet --pidfile $PIDFILE --exec $DAEMON
+	#
+	#	Now we have to wait until squid has _really_ stopped.
+	#
+	sleep 2
+	if test -n "$PID" && kill -0 $PID 2>/dev/null
+	then
+		echo -n "(waiting..."
+		cnt=0
+		while kill -0 $PID 2>/dev/null
+		do
+			cnt=`expr $cnt + 1`
+			if [ $cnt -gt 60 ]
+			then
+				#
+				#	Waited 120 seconds now. Fail.
+				#
+				echo -n "failed)"
+				if [ "$1" = verbose ] ; then
+					echo "."
+				else
+					echo -n " "
+				fi
+				return
+			fi
+			sleep 2
+			echo -n "."
+		done
+		echo -n "done)"
+		if [ "$1" = verbose ] ; then
+			echo " $NAME."
+		else
+			echo -n " "
+		fi
+	else
+		[ "$1" = verbose ] && echo "$NAME."
+	fi
+}
+
+case "$1" in
+    start)
+	echo -n "Starting proxy server: "
+	start
+	echo "$NAME."
+	push_start
+	/usr/local/bin/acceptlvscheck.sh
+	;;
+    stop)
+	/usr/local/bin/rejectlvscheck.sh
+	sleep 120
+    	push_stop
+	echo -n "Stopping proxy server: "
+	stop verbose
+	;;
+    reload|force-reload)
+	/usr/bin/update-squid.conf 
+	echo -n "Reloading $NAME configuration files..."
+	start-stop-daemon --stop --signal 1 \
+		--pidfile $PIDFILE --quiet --exec $DAEMON
+	echo "done."
+	;;
+    restart)
+	echo -n "Restarting proxy server: "
+	/usr/local/bin/rejectlvscheck.sh
+	sleep 120
+	stop
+	start
+	/usr/local/bin/acceptlvscheck.sh
+	echo "$NAME."
+	;;
+    *)
+	echo "Usage: /etc/init.d/$NAME {start|stop|reload|force-reload|restart}"
+	exit 3
+	;;
+esac
+
+exit 0
+

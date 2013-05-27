@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#
+# Manged by puppet.
+# This file will be change if the nagios file format change.
+# and don't edit this file by hand. 
+#
+
+[ $# -ne 3 ]&&exit 1
+wd="/tmp/cacti/"
+host=$1
+v1=$2
+v2=$3
+
+r=`grep -e "$v1" -e "$v2" ${wd}/${host}|sed -e "s/\/sec//" -e "s/ = /:/" -e "s/seconds//" -e "s/$3/out2/" -e  "s/$2/out1/"`
+echo -n $r

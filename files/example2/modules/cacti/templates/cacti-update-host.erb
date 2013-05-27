@@ -1,0 +1,47 @@
+#!/bin/bash
+#set -x
+#
+#
+# Manged by puppet.
+# This file will be change if the nagios file format change.
+# and don't edit this file by hand. 
+#
+#
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/bin/X11"
+ip=$1
+desc=$2
+cacticli="/var/www/vmx-cacti/cli"
+host_temp_id=$(${cacticli}/add_device.php --list-host-templates|grep "\<vmx - squid\>"|awk '{print $1}')
+
+
+# 1. add this device
+${cacticli}/add_graphs.php --list-hosts |grep $desc
+while [ $? -ne 0 ];do
+${cacticli}/add_device.php --description=${desc} --ip=${ip} --template=${host_temp_id} --avail=ping --ping_method=udp --community=public >/dev/null 2>&1
+done
+# get this device's id for add graph
+hostid=$(${cacticli}/add_graphs.php --list-hosts |grep "\<$desc\>"|awk '{print $1}')
+
+host_graph=$(mysql -u root -p<%= password %> -B -e "select graph_template_id from cacti.graph_local where host_id=\"${hostid}\"")
+# 2. add graph for this device
+graph_id=$(${cacticli}/add_graphs.php --list-graph-templates|awk '$2 ~/^vmx$/ {print $1}')
+for i in `echo $graph_id`;do
+echo $host_graph|grep "\<${i}\>" && continue 
+	${cacticli}/add_graphs.php --graph-type=cg --graph-template-id=$i --host-id=$hostid >/dev/null 2>&1
+done
+
+
+# 2.1 add snmp graph
+allip=$(${cacticli}/add_graphs.php --list-snmp-values --host-id=${hostid} --snmp-field=ifIP|grep "^10")
+for j in `echo ${allip}`;do
+	r=$(echo "$host_graph"|grep "\<2\>" |wc -l)
+	[ $r -eq 2 ]&&continue
+	${cacticli}/add_graphs.php --graph-type=ds --graph-template-id=2 --host-id=${hostid} --snmp-query-id=1 --snmp-query-type-id=16 --snmp-field=ifIP --snmp-value=${j}
+done
+
+
+# 3. add tree
+tree_id=$(${cacticli}/add_tree.php --list-trees|awk '$NF ~/^squid$/ {print $1}')
+${cacticli}/add_tree.php --list-nodes --tree-id=${tree_id}|grep "\<${ip}\>" && exit 0
+${cacticli}/add_tree.php --type=node --node-type=host --tree-id=${tree_id} --host-id=${hostid}
+

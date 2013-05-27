@@ -1,0 +1,38 @@
+// $Id: pdnsd.conf.in,v 1.4 2000/11/11 20:32:58 thomas Exp $
+
+global {
+	perm_cache=102400;
+	cache_dir="/var/cache/pdnsd";
+	max_ttl=604800;
+	run_as="pdnsd";
+	paranoid=on;
+	status_ctl=on;
+	query_method=udp_only;
+}
+
+server {
+	ip=10.0.5.103;
+	timeout=30;
+	interval=30;
+	uptest=exec;
+	uptest_cmd="/usr/local/bin/check_dns -H www.vmmatrix.com -s 10.0.5.103";
+	purge_cache=off;
+}
+
+server {
+	ip=10.0.5.104;
+	timeout=30;
+	interval=30;
+	uptest=exec;
+	uptest_cmd="/usr/local/bin/check_dns -H www.vmmatrix.com -s 10.0.5.104";
+	purge_cache=off;
+}
+
+server {
+	ip=10.0.5.105;
+	timeout=30;
+	interval=30;
+	uptest=exec;
+	uptest_cmd="/usr/local/bin/check_dns -H www.vmmatrix.com -s 10.0.5.105";
+	purge_cache=off;
+}

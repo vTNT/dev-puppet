@@ -1,0 +1,5 @@
+#!/bin/bash
+servers="<%= nscaservers %>"
+for i in `echo $servers`;do
+	rsync -avz --delete /tmp/cacti/*squid ${i}::squidlog/<%= idc %>/
+done

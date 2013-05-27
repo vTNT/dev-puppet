@@ -1,0 +1,5 @@
+#
+# internal autodns
+#
+60.28.29.20	www.imobile.com.cn	all	check_exthttp
+60.28.29.21	bbs.imobile.com.cn	all	check_exthttp

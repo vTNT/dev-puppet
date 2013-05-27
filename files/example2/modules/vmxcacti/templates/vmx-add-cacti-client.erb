@@ -1,0 +1,41 @@
+#!/bin/bash
+
+
+#
+#  Add a vmx client to cacti
+#  2007-11-23
+#
+
+[ $# -eq 1 ]||exit 2
+
+cmddir="/var/www/vmx-cacti/cli"
+PATCH="/usr/bin:/bin:/usr/sbin:/sbin"
+LC_ALL=C
+desc="$1"
+ip="$1"
+
+# 1. add device
+/var/www/vmx-cacti/cli/add_graphs.php --list-hosts |grep $desc 2>/dev/null
+while [ $? -ne 0 ];do
+ht=$($cmddir/add_device.php  --list-host-templates|grep "vmx.*client"|awk '{print $1}')
+$cmddir/add_device.php --description=$desc --ip=$ip --template=$ht  
+done
+
+# 2. add graph
+hostid=$($cmddir/add_graphs.php --list-hosts|grep $1|awk '{print $1}')
+host_graph=$(mysql -u <%= dbuser %> -p<%= dbpass %> -B -e "select graph_template_id from cacti.graph_local where host_id=\"${hostid}\"")
+graphid=$($cmddir/add_graphs.php --list-graph-templates|grep client_rt|awk '{print $1}')
+echo $host_graph|grep $graphid
+while [ $? -ne 0 ];do
+$cmddir/add_graphs.php --graph-type=cg --graph-template-id=$graphid --host-id=$hostid 
+done
+
+# 3. add graph to tree
+
+treeid=$($cmddir/add_tree.php --list-trees|grep "vmx.*client"|awk '{print $1}')
+$cmddir/add_tree.php --list-nodes --tree-id=$treeid|grep $desc&&exit 0
+$cmddir/add_tree.php --type=node --node-type=host --tree-id=$treeid --host-id=$hostid
+
+#patch for add_device.php
+mysql -u <%= dbuser %> -p<%= dbpass %> -e "update cacti.host set availability_method=0 where id=$hostid and availability_method!=0;"
+

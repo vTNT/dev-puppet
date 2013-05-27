@@ -1,0 +1,32 @@
++ echoping
+menu = echoping
+title = echoping targets
+probe = EchoPingHttp
+
+++ vmx_cdn_clients
+menu = vmmatrix cdn clients
+title = vmmatrix cdn clients
+
++++ bbs_imobile
+menu=www_imobile
+url=http://bbs.imobile.com.cn/
+host = 60.28.29.21
+
+
++++ www_imobile
+menu=www_imobile
+url=http://www.imobile.com.cn/
+host = 60.28.29.20
+
++++ nothing
+menu=+++++++++
+
++++ www_imobile_multi
+menu = www_imobile_multi
+title = www_imobile_multi
+host = /echoping/vmx_cdn_clients/www_imobile /echoping/vmx_cdn_clients/www_imobile~shzj /echoping/vmx_cdn_clients/www_imobile~shnj
+
++++ bbs_imobile_multi
+menu = bbs_imobile_multi
+title = bbs_imobile_multi
+host = /echoping/vmx_cdn_clients/bbs_imobile /echoping/vmx_cdn_clients/bbs_imobile~shzj /echoping/vmx_cdn_clients/bbs_imobile~shnj

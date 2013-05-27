@@ -1,0 +1,8 @@
+#!/bin/bash
+#
+#
+# rm /var/log/nagios/archive log file before 7 days
+#
+
+PATH="/usr/bin:/bin"
+find /var/log/nagios/archives/ -name "nagios*log" -ctime +7|xargs rm -rf

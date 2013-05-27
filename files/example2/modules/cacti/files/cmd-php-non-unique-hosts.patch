@@ -1,0 +1,13 @@
+--- cacti/cmd.php	2007/11/03 23:03:30	4297
++++ cacti/cmd.php	2007/11/26 01:34:11	4355
+@@ -201,8 +201,8 @@
+ 	}
+ 
+ 	foreach ($polling_items as $item) {
+-		$data_source = $item["local_data_id"];
+-		$current_host = $item["hostname"];
++		$data_source  = $item["local_data_id"];
++		$current_host = $item["host_id"];
+ 
+ 		if ($current_host != $last_host) {
+ 			$new_host = true;

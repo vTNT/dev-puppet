@@ -1,0 +1,84 @@
+#--------------------------------------------------------------
+#   A.  no_cache for QUERY
+#---------------------------------------------------------------
+hierarchy_stoplist cgi-bin  forum.*php forum.*jsp forum.*asp forum.*pl bbs.*php bbs.*asp bbs.*jsp bbs.*pl \.php \.asp \.pl \.jsp \? \.cgi \.iso
+#---------------------------------------------------------------
+#   B.  define some acl class
+#---------------------------------------------------------------
+acl vmxfinger src 10.0.8.0/24 10.0.66.0/24  10.0.3.0/24 10.0.65.0/24
+acl acceleratedHostA dstdomain .com
+acl acceleratedHostC dstdomain .cn
+acl acceleratedHostB dstdomain .net
+acl acceleratedHostD dstdomain .org .cc .name .mobi .com.cn .co.nz
+acl acceleratedPort port 80
+acl acceleratedProtocol protocol HTTP
+acl all src 0.0.0.0/0.0.0.0
+acl localhost src 127.0.0.1/255.255.255.255
+acl manager proto cache_object
+acl to_localhost dst 127.0.0.0/8
+acl purge method PURGE
+#---------------------------------------------------------------
+#  C. cache manage
+#---------------------------------------------------------------
+cache_mgr webmaster@vmmatrix.com
+cache_store_log none
+cachemgr_passwd disable shutdown
+cachemgr_passwd disable config
+cachemgr_passwd disable offline_toggle
+cachemgr_passwd pass proxy
+<%= cache_dirs %>
+#---------------------------------------------------------------
+#  E.  ACL
+#---------------------------------------------------------------
+http_access allow acceleratedProtocol acceleratedPort acceleratedHostA
+http_access allow acceleratedProtocol acceleratedPort acceleratedHostC
+http_access allow acceleratedProtocol acceleratedPort acceleratedHostB
+http_access allow acceleratedProtocol acceleratedPort acceleratedHostD
+http_access allow manager localhost
+http_access allow vmxfinger manager
+http_access deny manager
+http_access allow purge localhost
+http_access deny  purge
+http_access deny all
+#--------------------------------------------------------------
+http_port 80
+http_port 81
+https_port 443	cert=/etc/squid/squid_ca.crt key=/etc/squid/squid.key
+http_reply_access allow all
+#---------------------------------------------------------------
+#  G. acelerator setting
+#---------------------------------------------------------------
+httpd_accel_host virtual
+httpd_accel_port 80
+httpd_accel_single_host off
+httpd_accel_uses_host_header on
+httpd_accel_with_proxy on
+#---------------------------------------------------------------
+#  H. Misc
+#---------------------------------------------------------------
+redirect_children 100
+positive_dns_ttl 5 minutes
+negative_dns_ttl 10 seconds
+negative_ttl 1 minutes
+maximum_object_size 6144 KB
+forward_timeout 10 seconds
+refresh_pattern .      0      90%     86400
+connect_timeout 5 seconds                              
+peer_connect_timeout 10 seconds                         
+read_timeout 120 seconds
+persistent_request_timeout 10 seconds
+client_lifetime 60 minutes
+half_closed_clients off
+ident_timeout 10 seconds
+shutdown_lifetime 10 seconds
+forwarded_for on
+cache_mem 32 MB
+request_timeout 10 seconds 
+pconn_timeout 60 seconds
+log_icp_queries off
+error_directory /usr/share/squid/errors/Simplify_Chinese
+cache_swap_low 93
+client_db on
+ie_refresh on
+visible_hostname <%= fqdn %>
+# END #

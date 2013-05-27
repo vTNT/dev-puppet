@@ -1,0 +1,17 @@
+#!/bin/bash 
+#$Id: keepalivepin,v 1.2 2006/02/27 07:30:41 hmy Exp hmy $
+#use dig check the powerdns's status.
+#in the dns database,have a IN TXT RR keepalivepin.vmmatrix.net,content is "AaBbCcDdEeFf"
+#
+RR=keepalivepin.vmmatrix.net
+[ $# -le 1 ]&&{ echo "useage: ${0} -h <ip>"; exit 126;}
+while getopts "h:" OPT;do
+	case $OPT in 
+		h)host=$OPTARG;;
+		*)echo "useage: $0 -h <ip>"&&exit 1;;
+	esac
+done
+
+
+dig @${host} txt ${RR}|grep "\<AaBbCcDdEeFf\>" >/dev/null
+exit $?

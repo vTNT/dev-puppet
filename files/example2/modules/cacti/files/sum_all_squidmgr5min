@@ -1,0 +1,6 @@
+#!/bin/bash
+find /opt/squidlog/ -cmin +15|xargs rm 2>/dev/null
+types="carpsquid cachesquid"
+for i in `echo $types`;do
+	find /opt/squidlog/ -name "$i"|xargs awk '{a[$1] += $3}END{for (i in a)print i" = "a[i]} ' >/opt/squidlog/$i
+done 

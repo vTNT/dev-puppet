@@ -1,0 +1,24 @@
+#!/bin/bash
+
+#
+# don't change this file by hand. managed by puppet.
+#
+
+
+dbuser=<%= dbuser %>
+dbpass=<%= dbpass %>
+
+# add devices
+for i in `cat /etc/cactiusers`;do
+	grep $i /etc/disabledcactiusers >/dev/null&&continue
+	/usr/local/bin/vmx-add-cacti-client.sh $i
+	/usr/bin/mysql -u $dbuser -p$dbpass -e "update  cacti.host set disabled='' where  disabled='on'"
+done
+
+# disabled devices
+
+for i in `cat /etc/disabledcactiusers`;do
+	/usr/bin/mysql -u $dbuser -p$dbpass -e "update  cacti.host set disabled='on' where hostname='${i}'"
+done
+
+/usr/bin/php /var/www/vmx-cacti/cli/rebuild_poller_cache.php

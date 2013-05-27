@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#
+# don't edit this file by hand. 
+#
+
+. /usr/local/bin/generate_external_domain.libs
+PATH="/usr/bin:/bin:/usr/sbin:/sbin"
+nettype=<%= nettype %>
+nagiosid=<%= nagiosid %>
+neighbors=$(awk '$NF ~/<%= nettype %>/ && $2 !~ /<%= nagiosid %>/ { print $2 }' /etc/nagios/node.list|sort|uniq)
+
+mkdir /etc/nagios/autodns -p
+rm /etc/nagios/autodns/* -rf
+make_nagios_conf $nagiosid active $nettype
+for i in `echo $neighbors`;do   make_nagios_conf $i passive $nettype; done
+make_nagios_conf $nagiosid cluster $nettype "$neighbors"

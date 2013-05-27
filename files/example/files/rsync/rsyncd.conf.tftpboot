@@ -1,0 +1,10 @@
+#####################################################################
+### THIS FILE IS MANAGED BY PUPPET 
+### puppet:///files/rsync/rsyncd.conf.tftpboot
+#####################################################################
+
+[tftpboot]
+read only = yes
+path = /srv/tftpboot
+
+

@@ -1,0 +1,8 @@
+deb http://<%= vmxpackageserver %>/pub/debian vmmatrix custom
+deb http://<%= mirrorserver %>/debian <%= lsbdistcodename %> main non-free contrib
+#deb http://<%= mirrorserver %>/debian-non-US <%= lsbdistcodename %>/non-US main contrib non-free
+deb-src http://<%= mirrorserver %>/debian <%= lsbdistcodename %> main non-free contrib
+#deb-src http://<%= mirrorserver %>/debian-non-US <%= lsbdistcodename %>/non-US main contrib non-free
+
+#deb http://<%= mirrorserver %>/debian-security <%= lsbdistcodename %>/updates main contrib non-free
+#deb-src http://<%= mirrorserver %>/debian-security <%= lsbdistcodename %>/updates main contrib non-free

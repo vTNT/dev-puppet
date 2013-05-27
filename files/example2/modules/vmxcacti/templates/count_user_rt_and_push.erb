@@ -1,0 +1,37 @@
+#!/bin/bash
+# set -x 
+
+#
+# Count a domain traffic and request from realtime squid log database and push to a rsync server.
+# Don't edit this file by hand
+# Managed by puppet.
+#
+
+PATH="/usr/bin:/bin:/usr/sbin:/sbin"
+
+
+centercacti=<%= centercacti %>
+dbuser=<%= dbuser %>
+dbpass=<%= dbpass %>
+
+t=300
+now=`/bin/date +%s`
+ts=`echo $(($now-${t}))`
+hostname=`hostname`
+exportfile=/tmp/$hostname.cacti.export
+
+> $exportfile
+
+
+for i in `cat /etc/cactiusers`;do 
+o=`/usr/bin/mysql -B  -u $dbuser -p$dbpass squid_log -e "select sum(bytes),count(bytes)  from logs where url like '%$i%' and time >${ts};" 2>/dev/null|tail -n 1`
+echo -n "$i " >>$exportfile
+echo  $o|awk '{printf "trac %d req %d", $1/300,$2/300}' >>$exportfile
+echo >>$exportfile
+done
+
+for i in `seq 5`;do 
+rsync --timeout=60 $exportfile ${centercacti}::cdnuserstat/var/
+[ $? -eq 0 ]&&break
+sleep 1
+done

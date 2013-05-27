@@ -1,0 +1,3 @@
+MAILTO=""
+* * * * * root /usr/local/bin/nagios-softdog
+

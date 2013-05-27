@@ -1,0 +1,6 @@
+#!/bin/bash
+
+case $1 in
+        start) run-parts /vmx-start.d/ ;;
+        *);;
+esac

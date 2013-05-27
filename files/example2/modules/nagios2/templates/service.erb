@@ -1,0 +1,6 @@
+define service {
+	service_description <%= name %>
+	use		local-service
+	host_name	<%= fqdn %>
+	check_command	<%= check_command %>
+}

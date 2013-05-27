@@ -1,0 +1,205 @@
+## test
+define hostgroup{
+        hostgroup_name  iamlive
+        alias           I'am live test 
+        members         localhost
+        }
+
+
+##
+
+define host {
+	host_name	host.61.172.246.129
+	address		61.172.246.129
+	use		active_linux_server
+	hostgroups	iamlive
+}
+
+define service {
+	service_description	check_ping
+	use			active_service
+	host_name		host.61.172.246.129
+        obsess_over_service     0
+	check_command		check_ping!500,50%!500,80%
+}
+
+define host {
+	host_name	host.58.61.155.1
+	address		58.61.155.1
+	use		active_linux_server
+	hostgroups	iamlive
+}
+
+define service {
+	service_description	check_ping
+	use			active_service
+	host_name		host.58.61.155.1
+        obsess_over_service     0
+	check_command		check_ping!500,50%!500,80%
+}
+
+define host {
+	host_name	host.221.130.180.130
+	address		221.130.180.130
+	use		active_linux_server
+	hostgroups	iamlive
+}
+
+define service {
+	service_description	check_ping
+	use			active_service
+	host_name		host.221.130.180.130
+        obsess_over_service     0
+	check_command		check_ping!500,50%!500,80%
+}
+
+
+define host {
+	host_name	host.202.96.209.5
+	address		202.96.209.5
+	use		active_linux_server
+	hostgroups	iamlive
+}
+
+define service {
+	service_description	check_ping
+	use			active_service
+	host_name		host.202.96.209.5
+        obsess_over_service     0
+	check_command		check_ping!500,50%!500,80%
+}
+
+define host {
+	host_name	host.202.96.209.6
+	address		202.96.209.6
+	use		active_linux_server
+	hostgroups	iamlive
+}
+
+define service {
+	service_description	check_ping
+	use			active_service
+	host_name		host.202.96.209.6
+        obsess_over_service     0
+	check_command		check_ping!500,50%!500,80%
+}
+
+define host {
+	host_name	host.202.96.209.133
+	address		202.96.209.133
+	use		active_linux_server
+	hostgroups	iamlive
+}
+
+define service {
+	service_description	check_ping
+	use			active_service
+	host_name		host.202.96.209.133
+        obsess_over_service     0
+	check_command		check_ping!500,50%!500,80%
+}
+
+define host {
+	host_name	host.202.96.209.134
+	address		202.96.209.133
+	use		active_linux_server
+	hostgroups	iamlive
+}
+
+define service {
+	service_description	check_ping
+	use			active_service
+	host_name		host.202.96.209.134
+        obsess_over_service     0
+	check_command		check_ping!500,50%!500,80%
+}
+
+
+define host {
+	host_name	www.google.cn
+	address		www.google.cn
+	use		active_linux_server
+	hostgroups	iamlive
+}
+
+define service {
+	service_description	check_ping
+	use			active_service
+	host_name		www.google.cn
+        obsess_over_service     0
+	check_command		check_ping!500,50%!500,80%
+}
+
+define host {
+	host_name	www.sohu.com
+	address		www.sohu.com
+	use		active_linux_server
+	hostgroups	iamlive
+}
+
+define service {
+	service_description	check_ping
+	use			active_service
+	host_name		www.sohu.com
+        obsess_over_service     0
+	check_command		check_ping!500,50%!500,80%
+}
+
+define host {
+	host_name	www.sina.com.cn
+	address		www.sina.com.cn
+	use		active_linux_server
+	hostgroups	iamlive
+}
+
+define service {
+	service_description	check_ping
+	use			active_service
+	host_name		www.sina.com.cn
+        obsess_over_service     0
+	check_command		check_ping!500,50%!500,80%
+}
+
+define host {
+	host_name	www.qq.com
+	address		www.qq.com
+	use		active_linux_server
+	hostgroups	iamlive
+}
+
+define service {
+	service_description	check_ping
+	use			active_service
+	host_name		www.qq.com
+        obsess_over_service     0
+	check_command		check_ping!500,50%!500,80%
+}
+
+define host {
+	host_name	www.baidu.com
+	address		www.baidu.com
+	use		active_linux_server
+	hostgroups	iamlive
+}
+
+define service {
+	service_description	check_ping
+	use			active_service
+	host_name		www.baidu.com
+        obsess_over_service     0
+	check_command		check_ping!500,50%!500,80%
+}
+
+  
+
+# cluseter check
+
+define service {
+	service_description	check_iamlive
+        obsess_over_service     0
+	check_command		check_service_cluster!"iamlive"!9!9!$SERVICESTATEID:host.61.172.246.129:check_ping$,$SERVICESTATEID:host.58.61.155.1:check_ping$,$SERVICESTATEID:host.221.130.180.130:check_ping$,$SERVICESTATEID:host.202.96.209.5:check_ping$,$SERVICESTATEID:host.202.96.209.6:check_ping$,$SERVICESTATEID:host.202.96.209.133:check_ping$,$SERVICESTATEID:host.202.96.209.134:check_ping$,$SERVICESTATEID:www.google.cn:check_ping$,$SERVICESTATEID:www.sohu.com:check_ping$,$SERVICESTATEID:www.sina.com.cn:check_ping$,$SERVICESTATEID:www.qq.com:check_ping$,$SERVICESTATEID:www.baidu.com:check_ping$
+	use			cluster-service
+	host_name		localhost
+	event_handler   	check-host-alive
+}
+

@@ -1,0 +1,57 @@
+#!/bin/bash
+
+
+#
+#  Add a vmx client to cacti
+#  2007-11-23
+#
+
+[ $# -eq 1 ]||exit 2
+
+cmddir="/var/www/vmx-cacti/cli"
+PATCH="/usr/bin:/bin:/usr/sbin:/sbin"
+LC_ALL=C
+desc="$1"
+ip="$1"
+apache2user="/etc/apache2/cactipasswords"
+
+# 1. add device
+/var/www/vmx-cacti/cli/add_graphs.php --list-hosts |grep $desc 2>/dev/null
+while [ $? -ne 0 ];do
+ht=$($cmddir/add_device.php  --list-host-templates|grep "vmx.*cdn"|awk '{print $1}')
+$cmddir/add_device.php --description=$desc --ip=$ip --template=$ht  
+done
+
+# 2. add graph
+hostid=$($cmddir/add_graphs.php --list-hosts|awk -v k=$desc '$2 == k {print $1}')
+host_graph=$(mysql -u <%= dbuser %> -p<%= dbpass %> -B -e "select graph_template_id from cacti.graph_local where host_id=\"${hostid}\"")
+graphid=$($cmddir/add_graphs.php --list-graph-templates|grep "cdn user rt on all squid node"|awk '{print $1}')
+
+echo $host_graph|grep $graphid
+while [ $? -ne 0 ];do
+$cmddir/add_graphs.php --graph-type=cg --graph-template-id=$graphid --host-id=$hostid 
+done
+
+# 3. add graph to tree
+
+treeid=$($cmddir/add_tree.php --list-trees|grep "vmx.*client"|awk '{print $1}')
+$cmddir/add_tree.php --list-nodes --tree-id=$treeid|grep $desc
+while [ $? -ne 0 ];do
+$cmddir/add_tree.php --type=node --node-type=host --tree-id=$treeid --host-id=$hostid
+done
+
+#patch for add_device.php
+mysql -u <%= dbuser %> -p<%= dbpass %> -e "update cacti.host set availability_method=0 where id=$hostid and availability_method!=0;"
+
+# add apache user
+descpass=$(echo $desc|md5sum|tr 'a-z' 'A-Z'|md5sum|cut -b1,2,3,4,5,6,7,8,9,10)
+htpasswd -b ${apache2user} $desc $descpass
+# add cacti user
+${cmddir}/add_perms.php --list-users|awk -v d=$desc '$2 == d {print "userisok"}'|grep "userisok"
+while [ $? -ne 0 ];do 
+php ${cmddir}/copy_user.php cdnuser $desc
+done
+userid=$(${cmddir}/add_perms.php --list-users|awk -v d=$desc '$2 == d {print $1}')
+${cmddir}/add_perms.php --user-id=${userid} --item-type=host --item-id=$hostid
+/usr/bin/mysql -u <%= dbuser %> -p<%= dbpass %> -e "update  cacti.user_auth set realm='2' where  id='${userid}'"
+

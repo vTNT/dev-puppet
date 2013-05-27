@@ -1,0 +1,4 @@
+#!/bin/bash
+/bin/echo "CRITICAL: Service results are stale!"
+
+exit 3

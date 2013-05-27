@@ -1,0 +1,8 @@
+#
+# MySQL Configuration
+#
+ gmysql-host=<%= dbserver %>
+ gmysql-port=3306
+ gmysql-dbname=<%= dbname %>
+ gmysql-user=pdns
+ gmysql-password=kaimen

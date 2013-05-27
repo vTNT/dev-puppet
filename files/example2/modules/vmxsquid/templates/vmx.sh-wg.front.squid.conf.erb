@@ -1,0 +1,153 @@
+
+
+
+#Don't edit this file by hand, managed by puppet.#
+
+
+
+#--------------------------------------------------------------
+#   A.  no_cache for QUERY
+#---------------------------------------------------------------
+hierarchy_stoplist cgi-bin  forum.*php forum.*jsp forum.*asp forum.*pl bbs.*php bbs.*asp bbs.*jsp bbs.*pl \.php \.asp \.pl \.jsp \? \.cgi \.iso
+acl QUERY urlpath_regex cgi-bin  forum.*php forum.*jsp forum.*asp forum.*pl bbs.*php bbs.*asp bbs.*jsp bbs.*pl \.php \.asp \.pl \.jsp \? \.cgi \.iso
+acl vmxwww dstdomain store.vmmatrix.net store.vmmatrix.com store.vmx.cn
+acl special_query url_regex "/etc/squid/special_query"
+no_cache deny special_query
+no_cache deny QUERY
+no_cache deny vmxwww
+acl vmx_bl url_regex "/etc/squid/vmx_bl"
+http_access deny vmx_bl 
+#---------------------------------------------------------------
+#   B.  define some acl class
+#---------------------------------------------------------------
+acl 5CONN maxconn 20
+acl vmxfinger src 10.0.8.0/24 10.0.3.0/24 10.0.97.0/24
+acl vmxlvs	src 10.0.0.0/255.255.0.0
+acl cn99	dstdomain .cn99.com
+acl d50k        dstdomain  x.com 
+acl d100k       dstdomain  x.com
+acl d150k       dstdomain   .wansong.net  .chinaunix.net .mirror.vmmatrix.net .dxmirror.vmmatrix.net .cncmirror.vmmatrix.net .52012.com .52012.net .52012.cc  .imobile.com.cn .55bbs.com
+acl d30k        dstdomain  .mx99.com
+acl d20k        dstdomain  y.com
+acl acceleratedHostA dstdomain .com
+acl acceleratedHostC dstdomain .cn
+acl acceleratedHostB dstdomain .net
+acl acceleratedHostD dstdomain .org .cc .name .mobi .com.cn .co.nz
+acl acceleratedPort port 80
+acl acceleratedProtocol protocol HTTP
+acl all src 0.0.0.0/0.0.0.0
+acl localhost src 127.0.0.1/255.255.255.255
+acl manager proto cache_object
+acl to_localhost dst 127.0.0.0/8
+acl purge method PURGE
+acl 52012mp3 dstdomain .52012.com .52012.net .52012.cc
+acl baidump3 referer_regex -i  baidu.*mp3 sougou.*mp3
+
+#---------------------------------------------------------------
+#  C. cache manage
+#---------------------------------------------------------------
+cache_mgr webmaster@vmmatrix.com
+cache_store_log none
+cachemgr_passwd disable shutdown
+cachemgr_passwd disable config
+cachemgr_passwd disable offline_toggle
+cachemgr_passwd pass proxy
+cache_dir null /tmp
+#---------------------------------------------------------------
+#  D. delay pool 
+#---------------------------------------------------------------
+delay_pools 5
+delay_class 1 2
+delay_class 2 2
+delay_class 3 2
+delay_class 4 2
+delay_class 5 2
+delay_access 1 allow d100k
+delay_access 1 deny all
+delay_access 2 allow d50k
+delay_access 2 deny all
+delay_access 3 allow d30k
+delay_access 3 deny all
+delay_access 4 allow d20k
+delay_access 4 deny all
+delay_access 5 allow d150k
+delay_access 5 deny all
+delay_parameters 1 -1/-1 102400/102400
+delay_parameters 2 -1/-1 51200/51200
+delay_parameters 3 -1/-1 30720/30720
+delay_parameters 4 -1/-1 20480/20480
+delay_parameters 5 -1/-1 153600/153600
+delay_initial_bucket_level 50
+#---------------------------------------------------------------
+#  E.  ACL
+#---------------------------------------------------------------
+http_access deny 5CONN all
+http_access deny  baidump3 52012mp3
+http_access allow	cn99	vmxfinger
+http_access deny  cn99	all
+http_access allow acceleratedProtocol acceleratedPort acceleratedHostA
+http_access allow acceleratedProtocol acceleratedPort acceleratedHostC
+http_access allow acceleratedProtocol acceleratedPort acceleratedHostB
+http_access allow acceleratedProtocol acceleratedPort acceleratedHostD
+http_access allow manager localhost
+http_access allow vmxfinger manager
+http_access deny manager
+http_access allow purge localhost
+http_access deny  purge
+http_access deny all
+#--------------------------------------------------------------
+http_port 80
+http_port 81
+https_port 443	cert=/etc/squid/squid_ca.crt key=/etc/squid/squid.key
+http_reply_access allow all
+#---------------------------------------------------------------
+#  F. cache NEIGHBOUR SELECTION ALGORITHM
+#---------------------------------------------------------------
+always_direct allow QUERY
+always_direct allow vmxlvs
+always_direct allow special_query
+never_direct allow all
+
+cache_peer 10.0.97.11       parent 80  0      carp-load-factor=0.2
+cache_peer 10.0.97.12       parent 80  0      carp-load-factor=0.2
+cache_peer 10.0.97.13       parent 80  0      carp-load-factor=0.2
+cache_peer 10.0.97.14       parent 80  0      carp-load-factor=0.2
+cache_peer 10.0.97.15       parent 80  0      carp-load-factor=0.2
+
+#---------------------------------------------------------------
+#  G. acelerator setting
+#---------------------------------------------------------------
+httpd_accel_host virtual
+httpd_accel_port 80
+httpd_accel_single_host off
+httpd_accel_uses_host_header on
+httpd_accel_with_proxy on
+#---------------------------------------------------------------
+#  H. Misc
+#---------------------------------------------------------------
+redirect_children 100
+positive_dns_ttl 5 minutes
+negative_dns_ttl 10 seconds
+negative_ttl 1 minutes
+maximum_object_size 6144 KB
+forward_timeout 10 seconds
+refresh_pattern .      0      10%     10
+connect_timeout 5 seconds                              
+peer_connect_timeout 10 seconds                         
+read_timeout 120 seconds
+persistent_request_timeout 10 seconds
+client_lifetime 60 minutes
+half_closed_clients off
+ident_timeout 10 seconds
+shutdown_lifetime 10 seconds
+forwarded_for on
+cache_mem <%= Integer(vmx_memsize.to_i*0.45) -%> MB
+request_timeout 10 seconds 
+pconn_timeout 60 seconds
+log_icp_queries off
+error_directory /usr/share/squid/errors/Simplify_Chinese
+cache_swap_low 93
+client_db on
+ie_refresh on
+visible_hostname <%= fqdn %>
+# END #

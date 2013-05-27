@@ -1,0 +1,6 @@
+#!/bin/bash
+t=300
+now=`/bin/date +%s`
+ts=`echo $(($now-${t}))`
+o=`/usr/bin/mysql -B -u <%= dbuser %> -p<%= dbpass %> squid_log -e "select sum(bytes),count(bytes)  from logs where url like '%$1%' and time >${ts};" 2>/dev/null|tail -n 1`
+echo $o|awk '{printf "trac:%d req:%d", $1/300,$2/300}'

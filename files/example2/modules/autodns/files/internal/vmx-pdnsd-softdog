@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# don't edit by hand
+
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/bin/X11
+
+dig @127.0.0.1 www.vmmatrix.cn +short
+
+if [ $? -ne 0 ];then
+	/etc/init.d/vmx-pdnsd start
+	logger -t 'pdnsd' 'powerdns softdog restart powerdns'
+fi

@@ -1,0 +1,2 @@
+MAILTO=""
+* * * * * root /usr/local/bin/active_auto_dns /var/log/nagios/status.dat|/usr/bin/nsupdate

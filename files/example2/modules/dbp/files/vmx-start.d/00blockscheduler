@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# for ticket #11
+for i in `find /sys/block/ -name scheduler `;do
+	echo cfq > $i
+done
+
+#
