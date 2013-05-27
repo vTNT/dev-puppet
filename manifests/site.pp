@@ -1,5 +1,5 @@
 ########################   for module rsync ######################
-$rsync_server       = "192.168.200.205"
+$rsync_server       = "xxx.xxx.xxx.xxx"
 $rsync_dir          = ["/data","/data/backup","/data/backup/log"]    #salt cmd.run 'mkdir'
 $rsync_password     = "rsync"
 $rsync_user         = "rsync"
@@ -22,14 +22,14 @@ $flush_password         = "xxxx"                      #亲自去db端创建mysql
 $logrotate_scripts_dir  = ["/home/cron","/home/cron/logrotate"]      #salt cmd.run 'mkdir'
 
 ########################   for module cacti  ########################
-$monitor_ip         = "192.168.200.205"
-$snmp_passwd        = "ename110"
+$monitor_ip         = "xxx.xxx.xxx.xxx"
+$snmp_passwd        = "xxx"
 
 ########################   for module salt   ########################
-$server_ip          = "192.168.200.205"
+$server_ip          = "xxx.xxx.xxx.xxx"
 
 ########################   for module nagios ########################
-$nagios_server      = "192.168.10.211"
+$nagios_server      = "xxx.xxx.xxx.xxx"
 
 ###################################################################
 import "modules.pp"
