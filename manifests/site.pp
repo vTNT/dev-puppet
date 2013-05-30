@@ -117,3 +117,17 @@ node /^redis\.\w+\.com$/ {
   include nagios::web
 }
 
+node 'client.test.com'{
+#   include cacti::db
+#   include cacti::db
+    Class ["mkdir"] -> Class ["file"]
+    include file
+    include mkdir
+   user {"linyd":
+        ensure => present,
+        shell => "/bin/bash",
+        groups => wheel,
+        managehome => true,
+        password => '$1$M05yB1$vG/M/Spm30cTHeuADYX2M/',
+        }
+}
