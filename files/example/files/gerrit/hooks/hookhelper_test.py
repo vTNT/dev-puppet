@@ -20,7 +20,7 @@ helper = HookHelper()
 
 
 class TestLogToFile(unittest.TestCase):
-    def assertLogFile(self, filename, project, branch='master'):
+    def assertLogFile(self, filename, project, branch='main'):
 
         # Ask helper to provide us with the full filename
         actual = helper.get_log_filename(project, branch, '')
@@ -104,10 +104,10 @@ class TestLogToFile(unittest.TestCase):
             'mediawiki/core',
             'Wikidata'
         )
-        # Make sure mediawiki/core.git@master is still sent to #mediawiki
+        # Make sure mediawiki/core.git@main is still sent to #mediawiki
         self.assertLogFile('mediawiki.log',
             'mediawiki/core',
-            'master'
+            'main'
         )
 
     def test_mediawiki_tools_to_wikimediadev(self):
